@@ -1,0 +1,15 @@
+.sf-projects { min-width: 0; }
+.sf-project-card { border: 1px solid var(--sf-color-border); border-radius: 1rem; overflow: hidden; background: var(--sf-color-surface); min-width: 0; }
+.sf-project-card__image { display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+.sf-project-card__body { padding: clamp(1rem, 3vw, 2rem); }
+.sf-project-card h3 { margin-top: 0; overflow-wrap: anywhere; }
+.sf-project-meta { display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin: 1rem 0 1.5rem; }
+.sf-project-meta dt { color: var(--sf-color-muted); font-size: .875rem; }
+.sf-project-meta dd { margin: .25rem 0 0; overflow-wrap: anywhere; }
+.sf-project-detail { padding-block: 2rem 4rem; }
+.sf-project-detail__images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-block: 2rem; }
+.sf-project-detail__images img { display: block; width: 100%; height: auto; border-radius: 1rem; }
+.sf-project-detail__images img:first-child { grid-column: 1 / -1; }
+.sf-project-detail section { margin-block: 2rem; }
+.sf-project-prose { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; max-width: 75ch; }
+@media (max-width: 600px) { .sf-project-detail__images { grid-template-columns: minmax(0, 1fr); } }

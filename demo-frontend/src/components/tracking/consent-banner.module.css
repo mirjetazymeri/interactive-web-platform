@@ -1,0 +1,25 @@
+/* Cookie consent: a quiet panel pinned to the bottom edge, in the site's own surface and type.
+   It does not cover the page or trap focus; the page stays usable while the visitor decides. */
+
+.banner { position:fixed; z-index:180; inset:auto 16px max(16px,env(safe-area-inset-bottom)); display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:16px 32px; max-width:1100px; margin-inline:auto; padding:22px 24px; border:1px solid var(--divider); border-radius:4px; background:var(--surface-background); color:var(--surface-foreground); box-shadow:0 18px 48px var(--shadow); }
+.copy { display:grid; gap:8px; min-width:0; }
+.title { font-family:var(--type-ui); margin:0; font-size:1rem; font-weight:var(--font-weight-ui); letter-spacing:-.01em; }
+.text { margin:0; color:var(--text-muted); font-size:.92rem; line-height:1.55; }
+.links { display:flex; flex-wrap:wrap; gap:6px 18px; margin:0; font-size:.85rem; }
+.links a { color:var(--surface-foreground); text-underline-offset:3px; }
+
+.choices { grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:10px 24px; margin:0; padding:14px 0 0; border:0; border-top:1px solid var(--divider); }
+.choice { display:flex; align-items:center; gap:10px; font-family:var(--type-ui); font-size:.92rem; cursor:pointer; }
+.choice input { width:18px; height:18px; accent-color:var(--color-accent); }
+.choice input:disabled { cursor:not-allowed; }
+.choice small { display:block; color:var(--text-muted); font-size:.75rem; }
+
+.actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:10px; }
+.actions :global(.button) { min-height:44px; padding:10px 22px; }
+.secondary:global(.button) { background:transparent; color:var(--surface-foreground); border-color:var(--border); }
+
+@media(max-width:767px) {
+  .banner { grid-template-columns:minmax(0,1fr); inset-inline:8px; padding:18px; }
+  .actions { justify-content:stretch; }
+  .actions :global(.button) { flex:1 1 auto; }
+}

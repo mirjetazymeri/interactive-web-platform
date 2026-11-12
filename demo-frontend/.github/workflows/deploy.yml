@@ -1,0 +1,86 @@
+
+name: Deploy
+
+on:
+  push:
+    branches: [main, production]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROD: ${{ github.ref_name == 'production' }}
+    steps:
+      - name: Target
+        run: |
+          case "${{ github.ref_name }}" in
+            production) echo "SITE_URL=https://demo.com" >> $GITHUB_ENV; echo "SITE_ENV=production" >> $GITHUB_ENV ;;
+            main) echo "SITE_URL=https://demoweb.stage-app.com" >> $GITHUB_ENV; echo "SITE_ENV=staging" >> $GITHUB_ENV ;;
+            *) echo "::error::Only main (staging) and production deploy"; exit 1 ;;
+          esac
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          STOREFRONT_CHANNEL: default
+          NEXT_TELEMETRY_DISABLED: 1
+        run: |
+          npm ci
+          npm run build
+          test -f .next/standalone/server.js || { echo "::error::Add output: 'standalone' to next.config.ts"; exit 1; }
+          # standalone server + static assets + public files = the whole app
+          cp -r .next/static .next/standalone/.next/static
+          [ -d public ] && cp -r public .next/standalone/public || true
+          # Passenger (cPanel Application Manager) starts app.js
+          printf "require('./server.js');\n" > .next/standalone/app.js
+
+      - name: Set up SSH and verify the server
+        env:
+          HOST: ${{ env.PROD == 'true' && secrets.SSH_HOST || secrets.STAGING_SSH_HOST }}
+          PORT: ${{ env.PROD == 'true' && secrets.SSH_PORT || secrets.STAGING_SSH_PORT }}
+          USR: ${{ env.PROD == 'true' && secrets.SSH_USERNAME || secrets.STAGING_SSH_USERNAME }}
+          FP: ${{ env.PROD == 'true' && secrets.SSH_HOST_FINGERPRINT || secrets.STAGING_SSH_HOST_FINGERPRINT }}
+          KEY: ${{ env.PROD == 'true' && secrets.SSH_PRIVATE_KEY || secrets.STAGING_SSH_PRIVATE_KEY }}
+          APP: ${{ env.PROD == 'true' && secrets.SSH_APP_PATH || secrets.STAGING_SSH_APP_PATH }}
+        run: |
+          [ -n "$HOST" ] && [ -n "$KEY" ] && [ -n "$APP" ] || { echo "::error::Missing SSH secrets for ${{ github.ref_name }}"; exit 1; }
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          # the key may be pasted as the PEM block or as one base64 line (base64 -w0 key);
+          # Windows line endings / trailing spaces from copy-paste are removed
+          if printf '%s' "$KEY" | grep -q 'BEGIN OPENSSH'; then
+            printf '%s\n' "$KEY" | tr -d '\r' | sed 's/[[:space:]]*$//' > ~/.ssh/id_ed25519
+          else
+            printf '%s' "$KEY" | tr -d '\r\n\t ' | base64 -d > ~/.ssh/id_ed25519
+          fi
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null || { echo "::error::SSH private key is not a valid key - paste the whole block again (BEGIN to END)"; exit 1; }
+          ssh-keyscan -T 15 -p "${PORT:-22}" -t ed25519 "$HOST" > /tmp/hostkey || true
+          [ -s /tmp/hostkey ] || { echo "::error::SSH on $HOST:${PORT:-22} did not answer"; exit 1; }
+          GOT="$(ssh-keygen -lf /tmp/hostkey -E sha256 | cut -d' ' -f2)"
+          [ "$GOT" = "$FP" ] || { echo "::error::Host key mismatch: got $GOT"; exit 1; }
+          cp /tmp/hostkey ~/.ssh/known_hosts
+          printf 'Host deploy\n  HostName %s\n  Port %s\n  User %s\n' "$HOST" "${PORT:-22}" "$USR" > ~/.ssh/config
+          echo "APP_PATH=$APP" >> $GITHUB_ENV
+
+      # --delete is safe here: the app folder holds only build output (.env and tmp/ are kept)
+      - name: Upload app
+        run: |
+          rsync -az --delete --exclude='.env*' --exclude='tmp/' \
+            .next/standalone/ "deploy:$APP_PATH/"
+
+      - name: Restart app
+        run: |
+          ssh deploy "mkdir -p '$APP_PATH/tmp' && touch '$APP_PATH/tmp/restart.txt'"
+          echo "Deployed ${{ github.ref_name }} -> $SITE_URL"

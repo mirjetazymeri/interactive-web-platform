@@ -1,0 +1,93 @@
+/* Meeting booking. Builds on contact-form.module.css (layout, fields, pills, submit) and adds the
+   step progress, service and format cards, date strip and review list. Theme tokens only. */
+
+.progress { position:relative; display:grid; gap:18px; margin:clamp(40px,5vw,64px) 0 0; padding:0 0 0 26px; max-width:26rem; list-style:none; }
+.progress::before { content:""; position:absolute; left:4px; top:8px; bottom:8px; width:1px; background:linear-gradient(to bottom,var(--secondary-action),color-mix(in srgb,var(--secondary-action) 15%,transparent)); }
+.progress li { position:relative; display:grid; gap:2px; color:var(--text-muted); font-size:.98rem; line-height:1.5; }
+.progress li::before { content:""; position:absolute; left:-26px; top:.45em; width:9px; height:9px; border-radius:50%; background:var(--surface-background); box-shadow:inset 0 0 0 1px var(--secondary-action); }
+.progress li[data-state=done]::before { background:var(--secondary-action); }
+.progress li[data-state=current] { color:var(--surface-foreground); font-weight:600; }
+.progress li[data-state=current]::before { background:var(--color-accent); box-shadow:0 0 10px var(--color-accent); }
+.progress small { color:var(--text-muted); font-size:.85rem; font-weight:400; }
+
+.panel { display:grid; gap:22px; min-width:0; }
+/* The contact form styles text inputs inside .form; its radios here are invisible hit areas instead. */
+.panel input[type=radio] { margin:0; padding:0; border:0; }
+.counter { font-family:var(--type-caption); margin:0; color:var(--text-muted); font-size:11px; font-weight:var(--font-weight-ui); letter-spacing:.14em; text-transform:uppercase; }
+.heading { font-family:var(--type-heading); margin:-14px 0 0; padding-bottom:18px; border-bottom:1px solid var(--divider); color:var(--surface-foreground); font-size:clamp(1.25rem,1.8vw,1.6rem); font-weight:var(--font-weight-display); letter-spacing:var(--letter-spacing-heading); outline:none; }
+.muted { color:var(--text-muted); font-size:.92rem; line-height:1.55; }
+.hint { margin:-8px 0 0; color:var(--text-muted); font-size:13px; }
+/* Desktop shows the step list beside the form, so the "Step N of M" line only appears on smaller screens. */
+@media(min-width:1024px) {
+  .counter { display:none; }
+  .heading { margin-top:0; }
+}
+.meta { font-family:var(--type-caption); color:var(--surface-foreground); font-size:.8rem; font-weight:var(--font-weight-ui); letter-spacing:.04em; }
+
+/* Selectable cards: the radio fills the card, the span carries the look (as with .choice). */
+.services,.cards { display:grid; gap:14px; }
+.cards { grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); }
+.service,.card { position:relative; display:block; margin:0; cursor:pointer; }
+.service input,.card input,.day input { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
+.service > span,.card > span { display:grid; gap:6px; height:100%; padding:20px 22px; border:1px solid var(--divider); border-radius:4px; color:var(--surface-foreground); transition:border-color 240ms,background-color 240ms; }
+.card > span { gap:4px; padding:24px; }
+.service strong,.card strong { font-family:var(--type-ui); font-size:1.05rem; font-weight:var(--font-weight-ui); }
+/* As on the ServiceX cards: a crisp accent border on a raised surface, with a 2px line that draws across the top. */
+.service > span,.card > span { position:relative; }
+.service > span::before,.card > span::before { position:absolute; content:""; inset:-1px -1px auto; height:2px; background:var(--accent-text); transform:scaleX(0); transform-origin:left; transition:transform 260ms cubic-bezier(.22,1,.36,1); pointer-events:none; }
+.service input:checked + span,.card input:checked + span { border-color:var(--accent-text); background:var(--state-hover); }
+.service input:checked + span::before,.card input:checked + span::before { transform:scaleX(1); }
+@media(hover:hover) and (pointer:fine) {
+  .service input:not(:checked):hover + span,.card input:not(:checked):hover + span { border-color:color-mix(in srgb,var(--accent-text) 55%,var(--divider)); background:var(--state-hover); }
+  .service input:hover + span::before,.card input:hover + span::before { transform:scaleX(1); }
+}
+.service input:focus-visible + span,.card input:focus-visible + span,.day input:focus-visible + span { outline:2px solid var(--focus-ring); outline-offset:3px; }
+.icon { display:grid; place-items:center; width:44px; height:44px; margin-bottom:10px; border-radius:50%; box-shadow:inset 0 0 0 1px var(--divider); color:var(--surface-foreground); transition:color 240ms,box-shadow 240ms; }
+.card input:checked + span .icon { box-shadow:inset 0 0 0 1px var(--accent-text); color:var(--accent-text); }
+
+/* Date strip: scrolls sideways on small screens. */
+.zone { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:6px 16px; color:var(--text-muted); font-size:13px; }
+.days { display:flex; gap:10px; margin:0 -4px; padding:4px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:thin; }
+.day { position:relative; flex:none; scroll-snap-align:start; cursor:pointer; }
+.day > span { font-family:var(--type-ui); display:grid; justify-items:center; gap:2px; min-width:84px; padding:12px 14px; border:1px solid var(--divider); border-radius:16px; color:var(--text-muted); font-size:14px; font-weight:var(--font-weight-ui); white-space:nowrap; transition:border-color .25s ease,color .25s ease,background-color .25s ease; }
+.day > span small { font-family:var(--type-caption); font-size:11px; font-weight:var(--font-weight-ui); letter-spacing:.06em; }
+.day:hover > span { border-color:var(--border); color:var(--surface-foreground); }
+.day input:checked + span { border-color:color-mix(in srgb,var(--color-accent) 60%,transparent); background:var(--accent-glow); color:var(--surface-foreground); }
+.pager { display:flex; justify-content:space-between; gap:16px; }
+.pager > :only-child { margin-left:auto; }
+.status { margin:0; color:var(--text-muted); }
+
+.link { padding:0; border:0; background:none; color:var(--surface-foreground); font:inherit; font-family:var(--type-ui); font-size:.92rem; font-weight:var(--font-weight-ui); text-decoration:underline; text-decoration-color:var(--color-accent); text-underline-offset:4px; cursor:pointer; }
+.link:hover { text-decoration-thickness:2px; }
+.link:focus-visible,.back:focus-visible { outline:2px solid var(--focus-ring); outline-offset:3px; }
+
+.consent { margin-top:28px; }
+.consent span { height:auto; min-height:44px; border-radius:18px; line-height:1.45; }
+/* Honeypot: off-screen for people, still a field for bots. */
+.trap { position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
+
+.review { display:grid; margin:0; }
+.review > div { display:grid; grid-template-columns:minmax(110px,.35fr) 1fr auto; gap:6px 20px; align-items:baseline; padding:16px 0; border-bottom:1px solid var(--divider); }
+.review dt { font-family:var(--type-caption); color:var(--text-muted); font-size:13px; font-weight:var(--font-weight-ui); }
+.review dd { margin:0; color:var(--surface-foreground); }
+
+.office { display:grid; gap:6px; padding:20px 22px; border:1px solid var(--divider); border-radius:4px; }
+.office .link { justify-self:start; margin-top:6px; }
+
+.nav { margin-top:0; }
+.back { padding:12px 4px; border:0; background:none; color:var(--text-muted); font:inherit; font-family:var(--type-ui); font-weight:var(--font-weight-ui); cursor:pointer; }
+.back:hover { color:var(--surface-foreground); }
+
+@media(max-width:1023px) {
+  /* Stacked layout: the step counter is enough; the full list would push every step down. */
+  .progress { display:none; }
+}
+@media(max-width:767px) {
+  /* Keep the step's action in reach while scrolling long lists. */
+  .nav { position:sticky; bottom:0; z-index:1; padding:14px 0 calc(14px + env(safe-area-inset-bottom)); background:var(--surface-background); border-top:1px solid var(--divider); }
+  .review > div { grid-template-columns:1fr auto; }
+  .review dd { grid-column:1 / -1; grid-row:2; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .service > span,.card > span,.service > span::before,.card > span::before,.icon,.day > span { transition:none; }
+}

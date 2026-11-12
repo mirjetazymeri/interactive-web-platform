@@ -1,0 +1,19 @@
+.sf-faq { display: grid; gap: 0.75rem; }
+.sf-faq__item {
+    border: 1px solid var(--sf-color-border);
+    border-radius: var(--sf-radius-lg);
+    background: var(--sf-color-surface);
+    overflow: hidden;
+}
+.sf-faq__item summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 1rem 1.125rem;
+    list-style: none;
+}
+.sf-faq__item summary::-webkit-details-marker { display: none; }
+.sf-faq__answer {
+    padding: 0 1.125rem 1rem;
+    color: var(--sf-color-muted);
+    border-top: 1px solid var(--sf-color-border);
+}

@@ -1,0 +1,11 @@
+.sf-separator { text-align: center; }
+.sf-separator__label {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sf-color-muted);
+}
+.sf-separator hr { border: 0; margin: 0 auto; }

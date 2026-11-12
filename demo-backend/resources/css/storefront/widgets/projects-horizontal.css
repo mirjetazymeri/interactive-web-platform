@@ -1,0 +1,6 @@
+.sf-projects-horizontal { display: flex; gap: 1.5rem; overflow-x: auto; padding-bottom: 1rem; scroll-snap-type: x mandatory; }
+.sf-projects-horizontal > .sf-project-card { flex: 0 0 42%; min-width: 280px; scroll-snap-align: start; }
+@media (max-width: 600px) {
+    .sf-projects-horizontal { gap: 1rem; }
+    .sf-projects-horizontal > .sf-project-card { flex-basis: 88%; min-width: 0; }
+}

@@ -1,0 +1,5 @@
+# CMS / admin host. The public website (and its sitemap) is served by the
+# Next.js frontend. Uploaded media stays crawlable for link previews.
+User-agent: *
+Allow: /storage/
+Disallow: /

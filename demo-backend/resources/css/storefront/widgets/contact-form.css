@@ -1,0 +1,39 @@
+.sf-contact { max-width: 40rem; margin-inline: auto; }
+.sf-form { display: grid; gap: 1rem; }
+.sf-form__row { display: grid; gap: 1rem; }
+.sf-form__row--2 { grid-template-columns: 1fr 1fr; }
+.sf-field label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: #334155;
+}
+.sf-field input,
+.sf-field textarea {
+    width: 100%;
+    border: 1px solid var(--sf-color-border);
+    border-radius: var(--sf-radius-md);
+    padding: 0.75rem 0.875rem;
+    font: inherit;
+    background: var(--sf-color-surface);
+    transition: border-color var(--sf-transition), box-shadow var(--sf-transition);
+}
+.sf-field input:focus,
+.sf-field textarea:focus {
+    outline: none;
+    border-color: var(--sf-color-primary);
+    box-shadow: var(--sf-focus);
+}
+.sf-form__status {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--sf-radius-md);
+    display: none;
+}
+.sf-form__status.is-success { display: block; background: #ecfdf5; color: #047857; }
+.sf-form__status.is-error { display: block; background: #fef2f2; color: #b91c1c; }
+
+@media (max-width: 900px) {
+    .sf-form__row--2 { grid-template-columns: 1fr; }
+}

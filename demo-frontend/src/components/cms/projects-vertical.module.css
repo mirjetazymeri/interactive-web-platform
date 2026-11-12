@@ -1,0 +1,100 @@
+/* Projects gallery: a full-screen room where a ring of glowing cards turns over a mirror floor; hovering a card stops the ring and opens its details. */
+.layout { --orbit-step:13; /* Room colour straight from the CMS secondary colour; light-emitting parts lift it towards white so it still glows when the brand colour is dark. */
+  --orbit-tint:var(--color-secondary); --orbit-glow:color-mix(in oklab,var(--orbit-tint) 62%,white); --orbit-glow-light:color-mix(in oklab,var(--orbit-tint) 28%,white);
+  /* The room's night tones: its tint taken down to black (black and white are endpoints, not a palette). */
+  --orbit-night:color-mix(in srgb,var(--orbit-tint) 3%,black); --orbit-deep:color-mix(in srgb,var(--orbit-tint) 5%,black); --orbit-depth:color-mix(in srgb,var(--orbit-tint) 7%,black);
+  --orbit-card-w:clamp(190px,13vw,270px); --orbit-ease:cubic-bezier(.22,1,.36,1); --orbit-horizon:41%;
+  position:relative; isolation:isolate; overflow:hidden; color:var(--surface-foreground);
+  background:radial-gradient(70% 38% at 50% var(--orbit-horizon),color-mix(in srgb,var(--orbit-tint) 55%,transparent),transparent 70%),linear-gradient(to bottom,var(--orbit-night),color-mix(in srgb,var(--orbit-tint) 30%,var(--orbit-deep)) var(--orbit-horizon),var(--orbit-night)); }
+.stage { position:relative; height:max(620px,100svh); max-height:1080px; touch-action:pan-y; user-select:none; -webkit-user-select:none; cursor:grab; }
+.layout[data-orbit-dragging] .stage { cursor:grabbing; }
+.stage:focus-visible { outline:2px solid var(--focus-ring); outline-offset:-6px; }
+
+/* Ceiling: a grid of light beams receding to the horizon. */
+.room { position:absolute; inset:0; pointer-events:none; }
+.room::before { content:""; position:absolute; left:-60%; right:-60%; top:-55%; height:78%; transform:perspective(420px) rotateX(66deg); transform-origin:50% 100%;
+  background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--orbit-glow-light) 22%,transparent) 0 1.5px,transparent 1.5px 180px),repeating-linear-gradient(0deg,color-mix(in srgb,var(--orbit-glow-light) 12%,transparent) 0 1px,transparent 1px 180px);
+  -webkit-mask-image:linear-gradient(to top,transparent 2%,black 30%,color-mix(in srgb,black 40%,transparent) 80%,transparent); mask-image:linear-gradient(to top,transparent 2%,black 30%,color-mix(in srgb,black 40%,transparent) 80%,transparent); }
+/* Mirror floor: a glossy sheen from the horizon down, darkening towards the viewer. */
+.room::after { content:""; position:absolute; inset:calc(var(--orbit-horizon) - 6%) 0 0; background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--orbit-glow) 16%,transparent) 14%,color-mix(in srgb,var(--orbit-glow) 8%,transparent) 30%,transparent 70%),radial-gradient(60% 40% at 50% 30%,color-mix(in srgb,var(--orbit-glow-light) 10%,transparent),transparent); }
+/* Only the bottom edge fades out, so the caption stays readable over the reflections. */
+.stage::after { content:""; position:absolute; inset:auto 0 0; height:26%; z-index:2; pointer-events:none; background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--orbit-night) 85%,transparent) 70%,var(--orbit-night)); }
+
+.scene { position:absolute; z-index:1; left:50%; top:var(--orbit-horizon); width:0; height:0; }
+.floor { position:absolute; left:0; top:0; width:1px; height:1px; overflow:visible; pointer-events:none; }
+.floor path { fill:none; stroke-linecap:round; }
+.ringHalo { stroke:var(--orbit-glow); stroke-width:22; opacity:.28; filter:blur(10px); }
+.ringLine { stroke:var(--orbit-glow); stroke-width:6; filter:drop-shadow(0 0 8px var(--orbit-glow)) drop-shadow(0 0 22px var(--orbit-tint)); }
+.ringCore { stroke:var(--orbit-glow-light); stroke-width:1.6; }
+.ringRim path { stroke:var(--orbit-glow); }
+.floorBack { z-index:0; opacity:.55; }
+.floorFront { z-index:9000; }
+
+/* Cards: glowing glass panels, mirrored in the floor. */
+.card { position:absolute; left:0; top:0; width:var(--orbit-card-w); aspect-ratio:3/4; will-change:transform,opacity; }
+.card[data-hidden] { visibility:hidden; }
+/* A thick lit-glass slab: the bezel glows, the image sits inset in it. */
+.frame { --bezel:clamp(6px,.5vw,9px); position:absolute; inset:0; overflow:hidden; border-radius:22px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--orbit-glow-light) 55%,transparent),color-mix(in srgb,var(--orbit-glow) 45%,transparent) 30%,color-mix(in srgb,var(--orbit-glow) 60%,transparent));
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--orbit-glow-light) 80%,transparent),0 0 22px 2px color-mix(in srgb,var(--orbit-glow) 55%,transparent);
+  transition:box-shadow .5s var(--orbit-ease); }
+/* Light pooling inside the glass at the image edge, plus a top highlight. */
+.frame::after { content:""; position:absolute; inset:var(--bezel); border-radius:15px; pointer-events:none; box-shadow:0 0 0 1px color-mix(in srgb,white 22%,transparent),inset 0 0 24px 3px color-mix(in srgb,var(--orbit-glow) 70%,transparent); background:linear-gradient(165deg,color-mix(in srgb,white 10%,transparent),transparent 30%); }
+.image,.shade { position:absolute; inset:var(--bezel); border-radius:15px; overflow:hidden; background:color-mix(in srgb,var(--orbit-tint) 50%,var(--orbit-depth)); }
+.image img { box-sizing:border-box; width:100%; height:100%; padding:7% 6%; object-fit:contain; pointer-events:none; -webkit-user-drag:none; transition:transform 1.2s var(--orbit-ease); }
+/* Resting cards carry a tint of the room's colour that deepens with distance (--orbit-shade is set per frame). */
+.shade { pointer-events:none; background:linear-gradient(to bottom,color-mix(in srgb,var(--orbit-tint) 70%,var(--orbit-deep)),var(--orbit-deep)); opacity:calc(.28 + var(--orbit-shade,0)); transition:opacity .5s ease; }
+.card[data-front] .shade { opacity:calc(.08 + var(--orbit-shade,0)); }
+
+.details { position:absolute; inset:auto var(--bezel) var(--bezel); border-radius:0 0 15px 15px; display:grid; gap:8px; padding:70px 20px 20px; background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--orbit-deep) 80%,transparent) 34%,color-mix(in srgb,var(--orbit-deep) 95%,transparent)); color:white; opacity:0; translate:0 14px; transition:opacity .4s ease,translate .6s var(--orbit-ease); pointer-events:none; }
+.details h3 { font-family:var(--type-heading); font-size:clamp(1.1rem,1.3vw,1.35rem); font-weight:var(--font-weight-display); letter-spacing:var(--letter-spacing-heading); line-height:1.15; }
+.kicker { font-family:var(--type-caption); font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; color:var(--orbit-glow-light); }
+.client { font-family:var(--type-caption); font-size:.75rem; color:color-mix(in srgb,white 72%,transparent); }
+.client span { font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:color-mix(in srgb,white 45%,transparent); }
+.pills { display:flex; flex-wrap:wrap; gap:5px; padding:0; margin:0; list-style:none; }
+.pills li { font-family:var(--type-caption); border:1px solid color-mix(in srgb,white 22%,transparent); border-radius:100px; padding:2px 9px; font-size:.65rem; line-height:1.6; color:color-mix(in srgb,white 85%,transparent); }
+.action { font-family:var(--type-ui); display:flex; align-items:center; justify-content:space-between; margin-top:4px; padding-top:11px; border-top:1px solid color-mix(in srgb,white 16%,transparent); font-size:.8rem; font-weight:var(--font-weight-ui); text-decoration:none; color:white; }
+/* The whole opened card is the link target. */
+.action::after { content:""; position:absolute; inset:-200vh 0 0; }
+.action span { display:grid; place-items:center; width:28px; height:28px; border-radius:50%; background:var(--orbit-glow); box-shadow:0 0 14px var(--orbit-glow); color:white; font-size:.75rem; transition:transform .35s var(--orbit-ease); }
+.action:hover span { transform:scale(1.12); }
+.action:focus-visible { outline:none; }
+
+/* Opened card: white-hot rim, untinted image, details rise into view. */
+.card[data-active] .frame { box-shadow:0 0 0 2.5px var(--orbit-glow-light),0 0 50px 6px color-mix(in srgb,var(--orbit-glow) 85%,transparent),0 0 110px 10px color-mix(in srgb,var(--orbit-glow) 35%,transparent); }
+.card[data-active] .shade { opacity:0; }
+.card[data-active] .image img { transform:scale(1.05); }
+.card[data-active] .details { opacity:1; translate:0 0; pointer-events:auto; transition-delay:.06s; }
+.card:has(.action:focus-visible) .frame { outline:2px solid var(--focus-ring); outline-offset:4px; }
+
+/* Caption, progress meter and step controls along the bottom of the room. */
+.hud { position:absolute; inset:auto 0 0; z-index:3; display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:end; gap:24px; padding:clamp(24px,3.5vw,56px) var(--wide-content-gutter); pointer-events:none; }
+.caption { min-width:0; }
+.title { font-family:var(--type-heading); font-size:calc(clamp(2rem,4.2vw,4.4rem) * var(--heading-scale)); font-weight:var(--font-weight-display); letter-spacing:var(--letter-spacing-heading); line-height:1; overflow-wrap:anywhere; }
+.subtitle { font-family:var(--type-caption); margin-top:14px; font-size:.72rem; font-weight:var(--font-weight-ui); letter-spacing:.18em; text-transform:uppercase; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.subtitle::before { content:""; display:inline-block; width:24px; height:1px; margin-right:12px; vertical-align:middle; background:var(--orbit-glow-light); box-shadow:0 0 6px var(--orbit-glow); }
+.meter { font-family:var(--type-caption); display:flex; align-items:center; gap:16px; font-size:.78rem; font-weight:var(--font-weight-ui); letter-spacing:.06em; font-variant-numeric:tabular-nums; color:var(--text-muted); }
+.meter span:first-child { color:var(--surface-foreground); }
+.meter ol { display:flex; align-items:center; gap:9px; padding:0; margin:0; list-style:none; }
+.meter li { width:1.5px; height:18px; border-radius:2px; background:color-mix(in srgb,var(--surface-foreground) 40%,transparent); transition:width .45s var(--orbit-ease),height .45s var(--orbit-ease),background .45s ease,box-shadow .45s ease; }
+.meter li[data-current] { width:14px; height:22px; border-radius:4px; background:transparent; box-shadow:inset 0 0 0 1.5px var(--orbit-glow-light),0 0 12px var(--orbit-glow); }
+.controls { justify-self:end; display:flex; gap:10px; pointer-events:auto; }
+.controls button { width:48px; height:48px; border:1px solid color-mix(in srgb,var(--orbit-glow-light) 45%,transparent); border-radius:50%; background:color-mix(in srgb,var(--orbit-glow) 18%,color-mix(in srgb,var(--orbit-deep) 60%,transparent)); color:white; transition:background .25s ease,box-shadow .25s ease; }
+.controls button:hover { background:var(--orbit-glow); box-shadow:0 0 22px var(--orbit-glow); }
+
+/* The ring fades in once placed, so the first frame never shows the cards stacked. */
+.scene,.hud { transition:opacity .8s ease; }
+.layout:not([data-orbit-ready]) :is(.scene,.hud) { opacity:0; }
+
+@media (max-width:899px) {
+  .layout { --orbit-step:19; --orbit-card-w:clamp(150px,42vw,220px); --orbit-horizon:38%; }
+  .stage { height:max(560px,88svh); }
+  .hud { grid-template-columns:minmax(0,1fr) auto; row-gap:18px; }
+  .meter { grid-column:1 / -1; grid-row:2; justify-self:center; }
+  .title { font-size:calc(clamp(1.7rem,8vw,2.6rem) * var(--heading-scale)); }
+  .details { padding:44px 12px 12px; gap:6px; }
+  .pills,.client { display:none; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .frame,.image img,.details,.meter li,.shade { transition:none; }
+}

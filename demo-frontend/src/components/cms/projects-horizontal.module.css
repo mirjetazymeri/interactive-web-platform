@@ -1,0 +1,111 @@
+.layout { --project-stage-height:100dvh; position:relative; min-width:0; max-width:100%; background:var(--surface-background); color:var(--surface-foreground); overflow-anchor:none; }
+.stage { position:relative; overflow-x:auto; overflow-y:hidden; scrollbar-width:thin; scrollbar-color:var(--border) var(--surface-background); scroll-snap-type:x mandatory; }
+.track { position:relative; display:flex; width:100%; }
+.panel { position:relative; isolation:isolate; flex:0 0 100%; min-width:0; min-height:100svh; display:flex; align-items:flex-end; background:var(--surface-background); scroll-snap-align:start; }
+.image { position:absolute; inset:0; z-index:-2; }
+.image img { width:100%; height:100%; object-fit:cover; }
+.panel::before { content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(to bottom,color-mix(in srgb,var(--surface-background) 12%,transparent) 20%,var(--overlay) 68%,var(--surface-background)); }
+.information { width:100%; padding:clamp(24px,4vw,80px); padding-bottom:max(clamp(24px,4vw,80px),env(safe-area-inset-bottom)); padding-top:180px; translate:0 var(--project-content-pan,0px); }
+.titleRow { display:flex; align-items:baseline; justify-content:space-between; gap:24px; padding-bottom:28px; border-bottom:1px solid var(--border); }
+.titleRow h3 { font-family:var(--type-heading); font-size:calc(clamp(2.5rem,5vw,6rem) * var(--heading-scale)); font-weight:var(--font-weight-display); max-width:24ch; }
+.index { font-family:var(--type-caption); flex-shrink:0; font-size:.75rem; letter-spacing:.1em; }
+.details { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:24px 40px; padding-top:28px; }
+.details dl { min-width:0; max-width:100%; display:flex; flex-wrap:wrap; gap:24px 56px; margin:0; }
+.details dt { font-family:var(--type-caption); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+.details dd { overflow-wrap:anywhere; margin:0; font-size:.95rem; }
+.pills { display:flex; flex-wrap:wrap; gap:8px; padding:0; margin:0; list-style:none; max-width:50%; }
+.pills li { font-family:var(--type-caption); max-width:100%; overflow-wrap:anywhere; border:1px solid var(--border); border-radius:100px; padding:6px 18px; font-size:.8rem; }
+.action { display:flex; align-items:center; gap:24px; text-decoration:none; padding-block:10px; border-bottom:1px solid var(--border); color:var(--surface-foreground); }
+.action:hover { color:var(--accent-text); border-color:var(--accent-text); }
+.action:focus-visible,.stage:focus-visible,.controls button:focus-visible { outline:2px solid var(--focus-ring); outline-offset:-4px; }
+.controls { display:flex; justify-content:flex-end; gap:8px; padding:12px 24px; background:var(--surface-background); }
+.controls button { width:44px; height:44px; border:1px solid var(--border); border-radius:50%; background:var(--surface-background); color:var(--surface-foreground); }
+.controls button:hover { background:var(--state-hover); }
+.controls button:disabled { opacity:.4; }
+.controls button[hidden],.controls:not(:has(button:not([hidden]))) { display:none; }
+.layout[data-pinned] { height:calc(var(--project-stage-height) + var(--project-travel)); }
+.layout[data-pinned] .stage { position:sticky; top:0; height:var(--project-stage-height); overflow:clip; touch-action:pan-y pinch-zoom; }
+.layout[data-pinned] .panel { height:var(--project-stage-height); min-height:0; }
+.layout[data-pinned] .track { height:100%; will-change:transform; }
+.layout[data-pinned] .controls { display:none; }
+@media(max-width:899px) { .panel { min-height:85svh; } .titleRow { gap:12px; } .titleRow h3 { font-size:calc(clamp(2.1rem,8vw,4rem) * var(--heading-scale)); } .index { display:none; } .pills { max-width:100%; } .details { gap:20px; } .information { padding:48px max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left)); } }
+@media(prefers-reduced-motion:reduce) { .stage { scroll-snap-type:none; } }
+
+
+/* The final invitation belongs to the same track as the API projects. */
+.definitions { position:absolute; width:0; height:0; overflow:hidden; pointer-events:none; }
+.closing { --closing-surface:var(--color-primary); --closing-ink:var(--surface-foreground); background:var(--closing-surface); color:var(--closing-ink); align-items:center; justify-content:center; }
+.closing::before { display:none; }
+.closingContent { width:100%; min-width:0; padding:clamp(32px,7vw,120px); padding-inline:max(clamp(24px,7vw,120px),env(safe-area-inset-left)) max(clamp(24px,7vw,120px),env(safe-area-inset-right)); padding-bottom:max(clamp(32px,7vw,120px),env(safe-area-inset-bottom)); translate:0 var(--project-content-pan,0px); }
+.explore { font-family:var(--type-ui); display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; min-width:0; min-height:44px; width:100%; gap:clamp(24px,6vw,100px); max-width:1100px; margin-inline:auto; padding-block:clamp(24px,4vw,64px); border-block:1px solid currentColor; color:var(--closing-ink); font-size:clamp(2.4rem,6.5vw,7rem); line-height:1.05; letter-spacing:-.05em; text-decoration:none; }
+.explore > span:first-child { min-width:0; max-width:15ch; overflow-wrap:anywhere; text-wrap:balance; }
+.exploreArrow { font-size:.65em; line-height:1; }
+.explore:hover { background:color-mix(in srgb,var(--closing-ink) 8%,var(--closing-surface)); }
+.explore:focus-visible { outline:3px solid var(--closing-ink); outline-offset:12px; }
+/* The ending overlaps the next section (the footer on the home page): only the visible stage takes clicks. */
+.layout[data-pinned][data-project-ending] { background:transparent; margin-bottom:calc(-1 * var(--project-overlap,var(--project-height))); z-index:1; pointer-events:none; }
+.layout[data-pinned][data-project-ending] .stage { background:transparent; pointer-events:auto; }
+.layout[data-pinned][data-project-exiting] .stage { clip-path:var(--project-exit-clip); }
+@media(max-width:899px) {
+  .closingContent { padding-block:32px max(32px,env(safe-area-inset-bottom)); padding-inline:max(24px,env(safe-area-inset-left)) max(24px,env(safe-area-inset-right)); }
+  .explore { font-size:clamp(1.6rem,7.5vw,3.5rem); gap:clamp(12px,3vw,24px); padding-block:24px; }
+  .explore:focus-visible { outline-offset:8px; }
+}
+@media(max-height:500px) and (min-width:600px) {
+  .information { padding-top:24px; padding-bottom:max(20px,env(safe-area-inset-bottom)); }
+  .titleRow { padding-bottom:16px; } .details { padding-top:16px; gap:12px 24px; }
+  .titleRow h3 { font-size:calc(clamp(1.8rem,4vw,3rem) * var(--heading-scale)); }
+  .closingContent { padding-block:24px; } .explore { padding-block:20px; }
+}
+/* Reduced motion is a readable document, with no horizontal gesture required. */
+.layout[data-project-static] .stage { overflow:visible; }
+.layout[data-project-static] .track { display:block; }
+.layout[data-project-static] .panel { min-height:70svh; height:auto; }
+.layout[data-project-static] .controls { display:none; }
+@media(prefers-reduced-motion:reduce) {
+  .layout:not([data-pinned]) .stage { overflow:visible; }
+  .layout:not([data-pinned]) .track { display:block; }
+  .layout:not([data-pinned]) .panel { min-height:70svh; height:auto; }
+  .layout:not([data-pinned]) .controls { display:none; }
+}
+
+
+/* Explicit brand-color override requested by the user: white exit circles only. */
+.layout { --project-logo-foreground:white; }
+.layout[data-pinned][data-project-exiting] .closing { background:color-mix(in srgb,var(--color-primary),var(--project-logo-foreground) var(--project-logo-color-progress,0%)); }
+
+
+
+.information[data-project-reading-overflow] { background:var(--overlay); }
+
+
+
+.exploreArrow svg { display:block; width:1em; height:1em; }
+@media(max-width:899px) {
+  .explore { font-size:clamp(1.35rem,6vw,2.25rem); font-weight:300; letter-spacing:-.035em; gap:16px; padding-block:24px; }
+  .explore > span:first-child { max-width:15ch; text-wrap:balance; }
+  .exploreArrow { display:block; width:24px; height:24px; font-size:24px; }
+  .image img { object-fit:contain; }
+}
+/* Portrait mockups keep their complete proportions above the information. */
+@media(max-width:599px) and (min-height:500px) {
+  .panel:not(.closing) .image { inset:max(96px,env(safe-area-inset-top)) 0 calc(var(--project-information-height,260px) + 16px); }
+  .panel:not(.closing) .image img { object-position:center; }
+  .panel:not(.closing)::before { background:linear-gradient(to bottom,transparent 35%,var(--overlay) 75%,var(--surface-background)); }
+}
+@media(max-width:599px) and (min-height:500px) {
+  .layout[data-project-static] .panel:not(.closing) { flex-direction:column; align-items:stretch; }
+  .layout[data-project-static] .panel:not(.closing) .image { position:relative; inset:auto; width:100%; aspect-ratio:16/10; flex:none; }
+  .layout[data-project-static] .panel:not(.closing) .image img { position:absolute; inset:0; }
+}
+@media(max-width:599px) and (min-height:500px) and (prefers-reduced-motion:reduce) {
+  .layout:not([data-pinned]) .panel:not(.closing) { flex-direction:column; align-items:stretch; }
+  .layout:not([data-pinned]) .panel:not(.closing) .image { position:relative; inset:auto; width:100%; aspect-ratio:16/10; flex:none; }
+  .layout:not([data-pinned]) .panel:not(.closing) .image img { position:absolute; inset:0; }
+}
+
+/* Related projects on detail pages: the complete mockup (transparent PNG/WebP) sits between the header and the reading block. */
+.panel[data-project-media="secondary"] .image img { object-fit:contain; object-position:center; }
+.layout[data-pinned] .panel[data-project-media="secondary"] .image { inset:max(96px,env(safe-area-inset-top)) clamp(24px,4vw,80px) min(calc(var(--project-information-height,360px) - 164px),55%); }
+@media(max-width:899px) { .layout[data-pinned] .panel[data-project-media="secondary"] .image { inset:max(96px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) min(calc(var(--project-information-height,260px) - 32px),55%) max(24px,env(safe-area-inset-left)); } }
+@media(max-height:500px) and (min-width:600px) { .layout[data-pinned] .panel[data-project-media="secondary"] .image { inset:max(72px,env(safe-area-inset-top)) clamp(24px,4vw,80px) min(calc(var(--project-information-height,200px) - 8px),55%); } }

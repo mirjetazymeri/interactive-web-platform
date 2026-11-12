@@ -1,0 +1,43 @@
+/* Contact options: two cards that choose between the message form and meeting booking.
+   Same selected state as the ServiceX solution cards: a crisp accent border on a raised surface. */
+
+.chooser { position:relative; display:grid; gap:20px; padding-block:clamp(8px,2vw,24px) clamp(8px,2vw,16px); }
+/* Hash targets at the top of the chooser; the site's [id] scroll margin keeps them clear of the header. */
+.anchor { position:absolute; top:0; left:0; width:1px; height:1px; pointer-events:none; }
+.head { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:6px 16px; padding-bottom:16px; border-bottom:1px solid var(--divider); }
+.heading { font-family:var(--type-ui); margin:0; color:var(--surface-foreground); font-size:15px; font-weight:var(--font-weight-ui); }
+.hint { color:var(--text-muted); font-size:13px; }
+
+.cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.card { position:relative; display:flex; align-items:flex-start; gap:16px; width:100%; padding:22px 24px; border:1px solid var(--divider); border-radius:4px; background:transparent; color:var(--surface-foreground); font:inherit; text-align:left; cursor:pointer; transition:border-color 240ms,background-color 240ms; }
+/* As on the ServiceX cards: a 2px accent line draws across the top while the border fades in. */
+.card::before { position:absolute; content:""; inset:-1px -1px auto; height:2px; background:var(--accent-text); transform:scaleX(0); transform-origin:left; transition:transform 260ms cubic-bezier(.22,1,.36,1); pointer-events:none; }
+.card[aria-selected=true] { border-color:var(--accent-text); background:var(--state-hover); }
+.card[aria-selected=true]::before { transform:scaleX(1); }
+@media(hover:hover) and (pointer:fine) {
+  .card:not([aria-selected=true]):hover { border-color:color-mix(in srgb,var(--accent-text) 55%,var(--divider)); background:var(--state-hover); }
+  .card:hover::before { transform:scaleX(1); }
+}
+.card:focus-visible { outline:2px solid var(--focus-ring); outline-offset:3px; }
+
+.icon { display:grid; place-items:center; flex:none; width:44px; height:44px; border-radius:50%; box-shadow:inset 0 0 0 1px var(--divider); transition:color 240ms,box-shadow 240ms; }
+.card[aria-selected=true] .icon { box-shadow:inset 0 0 0 1px var(--accent-text); color:var(--accent-text); }
+
+.text { display:grid; gap:4px; min-width:0; }
+.text strong { font-family:var(--type-ui); font-size:1.1rem; font-weight:var(--font-weight-ui); letter-spacing:-.01em; }
+.description { color:var(--text-muted); font-size:.92rem; line-height:1.5; }
+.cue { font-family:var(--type-caption); margin-top:6px; color:var(--surface-foreground); font-size:.8rem; font-weight:var(--font-weight-ui); letter-spacing:.04em; }
+
+/* A radio-style mark, so the cards read as "pick one". */
+.mark { flex:none; width:18px; height:18px; margin-left:auto; border-radius:50%; box-shadow:inset 0 0 0 1px var(--border); transition:box-shadow .25s ease; }
+.card[aria-selected=true] .mark { box-shadow:inset 0 0 0 5px var(--accent-text); }
+
+.panel[hidden] { display:none; }
+
+@media(max-width:767px) {
+  .cards { grid-template-columns:minmax(0,1fr); }
+  .card { padding:18px 20px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .card,.card::before,.icon,.mark { transition:none; }
+}

@@ -1,0 +1,117 @@
+/* The footer and this widget share dimensions; only decoration is clipped. */
+.presentation { --coral: var(--color-accent); background: var(--surface); color: var(--surface-foreground); position: relative; overflow-anchor: none; }
+.stage { width: calc(100% - 2 * var(--wide-content-gutter)); max-width: var(--wide-content-max); margin-inline: auto; padding-block: 40px; position: relative; background: var(--surface); display: grid; grid-template-columns: minmax(0, 1fr); gap: 64px; }
+.copy,.wheel,.details,.detail { min-width: 0; }
+.presentation :global(#ptx-home-impact) { padding: 0; width: 100%; overflow: visible; }
+.presentation :global(#ptx-home-impact .ptx-inner) { max-width: none; }
+.presentation :global(#ptx-home-impact .ptx-title) { font-family:var(--type-heading); max-width: 17ch; margin: 0 0 40px; font-size:calc(clamp(36px, 4vw, 56px) * var(--heading-scale)); line-height: 1.08; font-weight:var(--font-weight-display); letter-spacing:var(--letter-spacing-heading); text-wrap: balance; overflow-wrap: anywhere; }
+.presentation :global(#ptx-home-impact .ptx-grid) { grid-template-columns: minmax(0,1fr); gap: clamp(48px,5vw,72px); }
+.presentation :global(#ptx-home-impact .ptx-left) { gap: 32px; }
+.presentation :global(#ptx-home-impact .ptx-right) { padding-top: 0; min-width: 0; }
+.presentation :global(#ptx-home-impact .ptx-copy) { max-width: 46ch; font-size: 17px; line-height: 1.85; text-wrap: pretty; overflow-wrap: anywhere; }
+.presentation :global(#ptx-home-impact .ptx-left > .ptx-copy:first-child) { max-width: 42ch; font-size: 20px; line-height: 1.65; letter-spacing: -.015em; color: var(--text-muted) !important; }
+/* CMS HTML cannot carry .button, so this mirrors the shared .button in globals.css value for value. */
+.presentation :global(#ptx-home-impact .ptx-button) { font-family:var(--type-ui); display: inline-flex; align-items: center; justify-content: center; gap: 20px; width: fit-content; min-height: 48px; padding: 12px 26px; max-width: 100%; overflow-wrap: anywhere; border: 1px solid transparent; border-radius: 100px; background: var(--color-accent) !important; color: var(--accent-foreground) !important; font-size: .95rem; font-weight:var(--font-weight-ui); line-height: 1.4; text-decoration: none; -webkit-tap-highlight-color: transparent; transition: background-color 200ms ease, color 200ms ease, box-shadow 350ms cubic-bezier(.22,1,.36,1), transform 200ms cubic-bezier(.22,1,.36,1); }
+.presentation :global(#ptx-home-impact .ptx-button:active) { transform: scale(.97); }
+.presentation :global(#ptx-home-impact .ptx-button)::after { content: "↗"; display: inline-block; transition: transform 350ms cubic-bezier(.22,1,.36,1); }
+.presentation :global(#ptx-home-impact .ptx-button:focus-visible),.wheel button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; box-shadow: none; }
+.presentation :global(#ptx-home-impact .ptx-button:focus-visible)::after { transform: translate(2px,-2px); }
+.wheel { position: relative; isolation: isolate; align-self: start; width: 100%; }
+.index { display: none; gap: 0; width: min(100%, 22rem); margin: 56px 0 0; padding: 0; list-style: none; counter-reset: none; border-top: 1px solid var(--divider); }
+.index li { border-bottom: 1px solid var(--divider); }
+.index button { display: flex; align-items: baseline; gap: 16px; width: 100%; min-height: 48px; padding: 12px 0; border: 0; background: none; color: var(--text-muted); font: inherit; font-family:var(--type-caption); font-size: 12px; letter-spacing: .12em; text-align: start; cursor: pointer; transition: color 250ms ease; }
+.index button > span { width: 22px; font-variant-numeric: tabular-nums; letter-spacing: .08em; }
+.index button[data-active="true"] { color: var(--surface-foreground); }
+.index button[data-active="true"] > span { color: var(--accent-text); }
+.index button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
+.bridge { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; opacity: 0; transition: opacity 400ms ease; z-index: 1; }
+.bridge[data-visible="true"] { opacity: 1; }
+.bridge path { fill: none; stroke: var(--color-accent); stroke-width: 1; stroke-dasharray: 1; stroke-dashoffset: 0; vector-effect: non-scaling-stroke; opacity: .55; filter: drop-shadow(0 0 3px color-mix(in srgb,var(--color-accent) 50%,transparent)); }
+.detailLink { font-family:var(--type-ui); display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; padding-block: 8px; color: var(--surface-foreground); font-size: 14px; font-weight:var(--font-weight-ui); text-decoration: none; background: linear-gradient(90deg,var(--color-accent),transparent) left bottom / 0 1px no-repeat; transition: background-size 350ms cubic-bezier(.22,1,.36,1); }
+.detailLink[hidden] { display: none; }
+.detailLink > span { color: var(--accent-text); }
+.detailLink:hover,.detailLink:focus-visible { background-size: 100% 1px; }
+.wheelRunway { min-width:0; align-self:start; }
+.wheelWindow { min-width:0; }
+.wheelHeader { font-family:var(--type-caption); display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 16px; border-top: 1px solid var(--divider); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.counter { font-family:var(--type-caption); display: none; flex: none; font-variant-numeric: tabular-nums; letter-spacing: .08em; }
+.counter > span:last-child { color: var(--text-muted); }
+/* The complete list is the no-JS/reduced-motion default. */
+.wheelVisual,.wheelFooter { display: none; }
+.details { display: grid; }
+.detail { padding-block: 24px; border-top: 1px solid var(--divider); overflow-wrap: anywhere; }
+.detail h3 { font-family:var(--type-heading); font-weight:var(--font-weight-display); margin: 0 0 12px; font-size: 17px; line-height: 1.35; letter-spacing:var(--letter-spacing-heading); }
+.detail h3 > span { color: var(--accent-text); font-weight: 400; margin-inline-end: 8px; }
+.detail ul { margin: 0; padding: 0; list-style: none; color: var(--text-muted); font-size: 16px; line-height: 1.85; }
+/* Two readable columns need about 480px each plus the gap and site gutters. */
+@media(min-width:1100px) {
+  .stage { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(64px,6vw,104px); align-items: start; }
+  /* With the wheel in place the copy carries an index of it, joined by a line. */
+  .presentation[data-wheel-layout] .index { display: grid; }
+  .copy { padding-top:16px; }
+  .presentation[data-wheel-pinned="compact"] .copy { position:sticky; top:var(--wheel-copy-top); }
+}
+.presentation[data-wheel-layout] .counter { display: inline; }
+.presentation[data-wheel-layout] .wheelVisual { display: block; position: relative; width: 100%; height: var(--wheel-visual-height, 300px); margin-block: 18px 28px; }
+.ringViewport { position: absolute; inset: 0; overflow: clip; pointer-events: none; }
+.orbit,.rings { position: absolute; width: var(--wheel-diameter, 200px); height: var(--wheel-diameter, 200px); aspect-ratio: 1; left: 50%; top: 50%; }
+.orbit { transform: translate(-50%,-50%) rotate(var(--wheel-angle,0deg)); }
+.rings { transform: translate(-50%,-50%); border: 1px solid var(--divider); border-radius: 50%; }
+.rings::before,.rings::after { content: ""; position: absolute; border: 1px solid var(--divider); border-radius: 50%; }
+.rings::before { inset: 12%; }
+.rings::after { inset: -16%; }
+/* Each node's left/top comes from wheelNodePosition, so any service count fits the ring. */
+.nodePosition { position: absolute; width: 0; height: 0; }
+.cabin { position: absolute; width: 56px; transform: translate(-50%,-50%) rotate(calc(-1 * var(--wheel-angle,0deg))); }
+.node { width: 100%; min-height: 56px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; border: 0; border-radius: 50%; padding: 8px; background: var(--surface); color: var(--text-muted); text-align: center; font-size: 12px; letter-spacing: .025em; line-height: 1.35; cursor: pointer; transition: color 180ms ease; overflow-wrap: anywhere; }
+.nodeNumber { font-family:var(--type-heading); font-size: 28px; line-height: 1; font-weight:var(--font-weight-display); letter-spacing:var(--letter-spacing-heading); }
+.node[data-active="true"] { color: var(--surface-foreground); }
+.node[data-active="true"] .nodeNumber { color: var(--accent-text); }
+/* Eight services share the ring, so it shows numbers; the detail and index carry the names. */
+.presentation[data-wheel-layout="wide"] .cabin { width: 72px; }
+.presentation[data-wheel-layout="wide"] .node { min-height: 72px; }
+.presentation[data-wheel-layout="wide"] .nodeNumber { font-size: 36px; }
+.marker { position: absolute; top: 50%; left: calc(50% - var(--wheel-diameter,200px) / 2 - var(--wheel-node-width,56px) / 2 - 11px); width: 8px; height: 1px; background: var(--coral); pointer-events: none; }
+.marker > span { position: absolute; right: 0; top: -2px; width: 5px; height: 5px; background: var(--coral); border-radius: 50%; }
+/* All articles stay in the grid's sizing calculation: long details reserve their
+   natural height, so switching services cannot move the controls or crop text. */
+.presentation[data-wheel-layout] .detail { grid-area: 1 / 1; padding: 18px 0 0; border-top: 1px solid var(--divider); }
+.presentation[data-wheel-layout] .detail[aria-hidden="true"] { visibility: hidden; }
+.presentation[data-wheel-layout] .wheelFooter { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-top: 24px; }
+.hint { font-family:var(--type-caption); font-size: 11px; color: var(--text-muted); letter-spacing: .04em; }
+.hint > span { margin-left: 10px; }
+.presentation:not([data-wheel-pinned]) .hint { display: none; }
+.controls { display: flex; gap: 10px; margin-left: auto; }
+.controls button { display: grid; place-items: center; width: 46px; height: 46px; flex: none; border: 1px solid var(--border); border-radius: 50%; color: var(--surface-foreground); background: var(--surface); font-size: 20px; cursor: pointer; transition: background-color 180ms ease; }
+.controls button[aria-disabled="true"] { opacity: .4; cursor: default; }
+.presentation[data-wheel-pinned="true"] { height: calc(var(--wheel-stage-height) + var(--wheel-travel)); }
+.presentation[data-wheel-pinned="true"] .stage { position: sticky; top: var(--wheel-top); min-height: var(--wheel-stage-height); }
+.presentation[data-wheel-pinned="compact"] .wheelRunway { height:calc(var(--wheel-stage-height) + var(--wheel-travel)); }
+.presentation[data-wheel-pinned="compact"] .wheelWindow { position:sticky; top:var(--wheel-top); height:var(--wheel-window); overflow:clip; overflow-clip-margin:6px; }
+.presentation[data-wheel-pinned="compact"] .wheel { transform:translate3d(0,var(--wheel-pan,0px),0); }
+@media(hover:hover) and (pointer:fine) {
+  .controls button:not([aria-disabled="true"]):hover { background: var(--coral); color:var(--accent-foreground); border-color: var(--border); }
+  .presentation :global(#ptx-home-impact .ptx-button:hover) { color: var(--accent-hover-foreground) !important; background: var(--accent-hover) !important; box-shadow: 0 0 0 1px color-mix(in srgb,var(--color-accent) 45%,transparent),0 12px 36px var(--accent-glow); }
+  .presentation :global(#ptx-home-impact .ptx-button:hover)::after { transform: translate(2px,-2px); }
+  .index button:hover { color: var(--surface-foreground); }
+}
+@media(max-width:767px) {
+  .stage { padding-block: 40px; gap: 56px; }
+  .presentation :global(#ptx-home-impact .ptx-title) { font-size:calc(clamp(34px,8.2vw,52px) * var(--heading-scale)); margin-bottom:32px; }
+  .presentation :global(#ptx-home-impact .ptx-grid) { gap:44px; }
+  .presentation :global(#ptx-home-impact .ptx-left) { gap:28px; }
+  .presentation :global(#ptx-home-impact .ptx-left > .ptx-copy:first-child) { font-size:18px; }
+  .presentation :global(#ptx-home-impact .ptx-copy) { font-size:16px; line-height:1.8; }
+  .detail h3 { font-size: 16px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .presentation[data-wheel-pinned="true"] { height: auto; }
+  .presentation[data-wheel-pinned="true"] .stage { position: relative; top: auto; min-height: 0; }
+  .presentation[data-wheel-pinned="compact"] .wheelRunway { height:auto; }
+  .presentation[data-wheel-pinned="compact"] .wheel { position:relative; top:auto; }
+  .presentation[data-wheel-pinned="compact"] .wheelWindow { position:relative; top:auto; height:auto; overflow:visible; }
+  .presentation[data-wheel-pinned="compact"] .wheel { transform:none; }
+  .node,.controls button,.index button,.bridge,.detailLink,.presentation :global(#ptx-home-impact .ptx-button),.presentation :global(#ptx-home-impact .ptx-button)::after { transition: none; }
+  .presentation :global(#ptx-home-impact .ptx-button:active),.presentation :global(#ptx-home-impact .ptx-button:focus-visible)::after { transform: none; }
+}
+

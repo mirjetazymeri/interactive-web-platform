@@ -1,0 +1,49 @@
+.sf-pricing__grid {
+    display: grid;
+    gap: var(--sf-gutter);
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    align-items: stretch;
+}
+.sf-plan {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.sf-plan--popular {
+    border-color: color-mix(in srgb, var(--sf-color-primary) 40%, var(--sf-color-border));
+    box-shadow: 0 16px 40px color-mix(in srgb, var(--sf-color-primary) 18%, transparent);
+}
+.sf-plan__badge {
+    position: absolute;
+    top: -0.65rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--sf-color-primary);
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+}
+.sf-plan__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.15rem;
+    margin: 0.5rem 0 1rem;
+}
+.sf-plan__amount { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.sf-plan__period { color: var(--sf-color-muted); font-size: 0.9375rem; }
+.sf-plan__features {
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    flex: 1;
+    color: #334155;
+    font-size: 0.9375rem;
+}
+.sf-plan__features li::before { content: '✓'; color: var(--sf-color-primary); margin-right: 0.5rem; font-weight: 700; }

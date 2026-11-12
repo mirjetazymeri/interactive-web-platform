@@ -1,0 +1,43 @@
+.detail { background:var(--surface-background); color:var(--surface-foreground); }
+.opening { position:relative; isolation:isolate; }
+.introduction { position:sticky; top:var(--detail-intro-top,90px); z-index:0; padding:clamp(20px,4vw,72px) 24px 0; }
+.introContent { max-width:850px; margin-inline:auto; }
+.introContent h1 { font-family:var(--type-heading); font-size:calc(clamp(3rem,7vw,7rem) * var(--heading-scale)); font-weight:var(--font-weight-display); line-height:1.02; letter-spacing:var(--letter-spacing-heading); text-wrap:balance; }
+.metadata { font-family:var(--type-caption); margin:clamp(32px,4vw,56px) 0 0; font-size:clamp(.9rem,1.1vw,1.05rem); }
+.metadata > div { display:grid; grid-template-columns:minmax(90px,1fr) minmax(0,2fr); gap:24px; padding-block:9px; }
+.metadata dt { opacity:.7; }
+.metadata dd { text-align:right; margin:0; overflow-wrap:anywhere; }
+.website { font-family:var(--type-ui); display:flex; align-items:center; justify-content:center; gap:28px; width:fit-content; margin:36px auto 0; padding:10px 22px; min-height:44px; border:1px solid var(--border); text-decoration:none; font-size:.95rem; }
+.website:hover { background:var(--state-hover); }
+.website span { color:var(--surface-foreground); }
+.mainVisual { position:relative; z-index:2; min-height:var(--detail-cover-height,60svh); margin-top:clamp(48px,6vw,96px); padding:24px clamp(20px,7vw,140px) 0; background:var(--surface-background); }
+.image { width:100%; }
+.image img { width:100%; height:auto; max-height:110svh; object-fit:contain; }
+.story { display:grid; grid-template-columns:1fr 2fr; gap:40px; padding:clamp(72px,12vw,200px) clamp(24px,7vw,140px); }
+.mark { color:var(--surface-foreground); background:var(--color-primary); border:1px solid var(--border); border-radius:50%; width:44px; height:44px; display:grid; place-items:center; font-size:1.5rem; }
+.textSection + .textSection { margin-top:56px; }
+.textSection h2 { font-family:var(--type-caption); font-size:.8rem; font-weight:var(--font-weight-ui); letter-spacing:.06em; text-transform:uppercase; margin-bottom:20px; opacity:.65; }
+.textSection p { font-size:clamp(1.1rem,1.65vw,1.65rem); line-height:1.5; letter-spacing:-.025em; white-space:pre-line; overflow-wrap:anywhere; }
+.textSection p + p { margin-top:1.8em; }
+.visual { padding:clamp(24px,5vw,80px) clamp(20px,7vw,140px) clamp(64px,10vw,160px); }
+.visual img { max-height:95svh; }
+/* The whole frame fits below the fixed header, whatever the video's aspect ratio. */
+.video { display:block; width:auto; height:auto; max-width:min(100%,1440px); max-height:calc(100svh - 120px); margin-inline:auto; border-radius:12px; }
+.highlight { color:var(--color-accent); font-weight:inherit; }
+.lead { display:block; margin-bottom:.35em; font-family:var(--type-caption); font-size:.8rem; font-weight:var(--font-weight-ui); letter-spacing:.06em; text-transform:uppercase; color:var(--color-accent); }
+.indexLink { text-align:center; padding:64px 24px; background:var(--surface-background); }
+.indexLink a { display:inline-block; padding:12px; }
+@media(max-width:767px) {
+  .introduction { padding-inline:24px; }
+  .introContent h1 { font-size:calc(clamp(2.8rem,12vw,5rem) * var(--heading-scale)); }
+  .story { grid-template-columns:1fr; gap:24px; padding-block:64px; }
+  .metadata > div { gap:16px; }
+  .mainVisual { padding-inline:12px; }
+  .image img { max-height:90svh; }
+  /* Landscape videos read too small on phones: run edge to edge and trim the sides to 3:2. */
+  .mainVisual:has(.video) { padding-inline:0; }
+  .video { width:100%; max-width:none; max-height:none; aspect-ratio:3/2; object-fit:cover; border-radius:0; }
+  /* A dedicated mobile video is shown whole, never cropped. */
+  .video.portrait { width:auto; max-width:100%; max-height:calc(100svh - 100px); aspect-ratio:auto; object-fit:contain; }
+}
+@media(prefers-reduced-motion:reduce) { .introduction { position:relative; top:auto; } .mainVisual { min-height:0; } }

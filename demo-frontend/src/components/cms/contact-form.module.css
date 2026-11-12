@@ -1,0 +1,70 @@
+/* Contact: an intro with guidance beside a clean form. Theme tokens only;
+   the same eyebrow, hairlines, accent underline and pill button as the rest of the site. */
+.contact { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(48px,6vw,104px); align-items:start; padding-block:clamp(8px,2vw,32px) clamp(24px,4vw,56px); }
+.intro { position:sticky; top:120px; min-width:0; }
+.eyebrow { font-family:var(--type-caption); display:flex; align-items:center; gap:12px; margin:0; color:var(--text-muted); font-size:11px; font-weight:var(--font-weight-ui); letter-spacing:.14em; text-transform:uppercase; }
+.eyebrow::before { content:""; width:24px; height:1px; background:var(--color-accent); }
+.title { font-family:var(--type-heading); margin:20px 0 0; font-size:calc(clamp(2.6rem,5.2vw,5.25rem) * var(--heading-scale)); font-weight:var(--font-weight-display); line-height:1.02; letter-spacing:var(--letter-spacing-heading); text-wrap:balance; }
+.subtitle { margin:24px 0 0; max-width:42ch; color:var(--text-muted); font-size:clamp(1rem,1.2vw,1.15rem); line-height:1.7; text-wrap:pretty; }
+
+/* How it works: three short steps joined by a thin line, like the site's connection lines. */
+.steps { margin-top:clamp(40px,5vw,64px); max-width:26rem; }
+.stepsTitle { font-family:var(--type-ui); margin:0 0 18px; color:var(--surface-foreground); font-size:13px; font-weight:var(--font-weight-ui); }
+.steps ol { position:relative; display:grid; gap:18px; margin:0; padding:0 0 0 26px; list-style:none; }
+.steps ol::before { content:""; position:absolute; left:4px; top:8px; bottom:8px; width:1px; background:linear-gradient(to bottom,var(--secondary-action),color-mix(in srgb,var(--secondary-action) 15%,transparent)); }
+.steps li { position:relative; color:var(--text-muted); font-size:.98rem; line-height:1.5; }
+.steps li::before { content:""; position:absolute; left:-26px; top:.45em; width:9px; height:9px; border-radius:50%; background:var(--surface-background); box-shadow:inset 0 0 0 1px var(--secondary-action); }
+.steps li:first-child::before { background:var(--color-accent); box-shadow:0 0 10px var(--color-accent); }
+
+.form { display:grid; gap:44px; min-width:0; }
+.group { min-width:0; margin:0; padding:0; border:0; }
+.groupTitle { font-family:var(--type-ui); display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:8px 16px; width:100%; margin:0; padding:0 0 18px; border-bottom:1px solid var(--divider); color:var(--surface-foreground); font-size:15px; font-weight:var(--font-weight-ui); }
+.groupTitle > span { color:var(--text-muted); font-size:13px; font-weight:400; }
+
+/* Service picker: toggle pills (checkboxes underneath for keyboard and assistive technology). */
+.choices { display:flex; flex-wrap:wrap; gap:10px; padding-top:22px; }
+.choice { font-family:var(--type-ui); position:relative; margin:0; font-size:14px; font-weight:var(--font-weight-ui); cursor:pointer; }
+.choice input { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
+.choice span { display:inline-flex; align-items:center; gap:10px; min-height:44px; padding:10px 18px; border:1px solid var(--divider); border-radius:999px; color:var(--text-muted); transition:border-color .25s ease,color .25s ease,background-color .25s ease; }
+.choice span::before { content:""; width:7px; height:7px; border-radius:50%; box-shadow:inset 0 0 0 1px var(--border); transition:background-color .25s ease,box-shadow .25s ease; }
+.choice:hover span { border-color:var(--border); color:var(--surface-foreground); }
+.choice input:checked + span { border-color:color-mix(in srgb,var(--color-accent) 60%,transparent); background:var(--accent-glow); color:var(--surface-foreground); }
+.choice input:checked + span::before { background:var(--color-accent); box-shadow:0 0 8px var(--color-accent); }
+.choice input:focus-visible + span { outline:2px solid var(--focus-ring); outline-offset:3px; }
+
+.fields { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:40px; }
+.field { position:relative; min-width:0; padding-top:26px; }
+.wide { grid-column:1 / -1; }
+/* An odd field left before the message takes the full row. */
+.field:not(.wide):nth-child(odd):nth-last-child(2) { grid-column:1 / -1; }
+.label { font-family:var(--type-ui); display:block; margin:0; color:var(--text-muted); font-size:13px; font-weight:var(--font-weight-ui); transition:color .25s ease; }
+.form input:not([type=checkbox]),.form textarea { display:block; width:100%; margin:8px 0 0; padding:10px 0 14px; border:0; border-bottom:1px solid var(--divider); border-radius:0; background:transparent; color:var(--surface-foreground); font-size:1.05rem; line-height:1.5; outline:none; }
+.form input::placeholder,.form textarea::placeholder { color:color-mix(in srgb,var(--text-muted) 70%,transparent); }
+.form textarea { min-height:140px; resize:vertical; }
+.form input:-webkit-autofill { -webkit-text-fill-color:var(--surface-foreground); box-shadow:0 0 0 1000px var(--surface-background) inset; caret-color:var(--surface-foreground); }
+/* Focus draws the accent line across the field (the visible focus indicator). */
+.field::after { content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--color-accent); transform:scaleX(0); transform-origin:left; transition:transform .45s cubic-bezier(.22,1,.36,1); pointer-events:none; }
+.field:focus-within::after { transform:scaleX(1); }
+.field:focus-within .label { color:var(--surface-foreground); }
+/* After the visitor has interacted, an invalid field keeps a dashed accent line. */
+.field:has(:user-invalid) .label { color:var(--accent-text); }
+.field:has(:user-invalid) input,.field:has(:user-invalid) textarea { border-bottom-style:dashed; border-bottom-color:var(--accent-text); }
+
+.actions { display:flex; flex-wrap:wrap; align-items:center; gap:20px 28px; margin-top:-8px; }
+/* The submit is the shared .button (globals.css); nothing here restyles it. */
+.feedback { display:flex; align-items:center; gap:12px; margin:0; color:var(--surface-foreground); font-size:.95rem; line-height:1.5; }
+.feedback > span { display:grid; place-items:center; flex:none; width:26px; height:26px; border-radius:50%; background:var(--color-accent); color:var(--accent-foreground); font-size:.8rem; font-weight:700; }
+.feedback[data-ok=false] > span { border:1px solid var(--accent-text); background:transparent; color:var(--accent-text); }
+
+@media(max-width:1023px) {
+  .contact { grid-template-columns:minmax(0,1fr); gap:48px; }
+  .intro { position:static; }
+}
+@media(max-width:767px) {
+  .fields { grid-template-columns:minmax(0,1fr); }
+  .steps { margin-top:36px; }
+  .form .submit { width:fit-content; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .field::after,.label,.choice span,.choice span::before { transition:none; }
+}

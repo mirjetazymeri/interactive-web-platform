@@ -1,0 +1,45 @@
+.sf-carousel { overflow: hidden; }
+.sf-carousel__viewport {
+    display: flex;
+    gap: var(--sf-gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+}
+.sf-carousel__viewport::-webkit-scrollbar { height: 6px; }
+.sf-carousel__viewport::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+.sf-carousel__slide {
+    flex: 0 0 min(100%, 380px);
+    scroll-snap-align: start;
+    margin: 0;
+    border-radius: var(--sf-radius-lg);
+    overflow: hidden;
+    background: var(--sf-color-surface-2);
+}
+.sf-carousel__slide img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
+.sf-carousel__caption {
+    padding: 1rem 1.125rem;
+    display: grid;
+    gap: 0.25rem;
+}
+.sf-carousel__dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.sf-carousel__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    border: 0;
+    background: #cbd5e1;
+    cursor: pointer;
+    padding: 0;
+}
+.sf-carousel__dot.is-active { background: var(--sf-color-primary); width: 1.25rem; }
