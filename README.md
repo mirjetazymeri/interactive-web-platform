@@ -315,6 +315,9 @@ Do not commit:
 - `.env` or `.env.local` files.
 - Database passwords.
 - OpenAI API keys.
+
+
+
 - SMTP credentials.
 - Other private service credentials.
 
@@ -323,3 +326,10 @@ Use `.env.example` files to document required variables without including real s
 ## Project Purpose
 
 Demo Project demonstrates a decoupled web platform with centralized content management, API-driven frontend configuration, and an integrated chatbot that supports deterministic responses and optional OpenAI integration.
+
+WEBSITE SCREENSHOTS-
+<img width="1440" height="900" alt="home01" src="https://github.com/user-attachments/assets/1b5abcf9-c7bc-46d2-a645-48b3a5711818" />
+<img width="1440" height="900" alt="CONATCT-07" src="https://github.com/user-attachments/assets/7f0ffcd8-94e2-4807-b00d-b575a3458e0f" />
+<img width="1440" height="900" alt="PROJECT-06" src="https://github.com/user-attachments/assets/131df4de-a720-4b37-86d6-89c508dcf679" />
+<img width="1440" height="900" alt="PROJECTS-05" src="https://github.com/user-attachments/assets/29c3950c-df0e-433b-97ab-4a96163098d3" />
+<img width="1440" height="900" alt="SERVICES02" src="https://github.com/user-attachments/assets/30bc1660-6675-4cc7-8d37-abf1cafed3f4" />
